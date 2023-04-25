@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:jsf="http://xmlns.jcp.org/jsf" xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/template/layout.xhtml">
+
+	<ui:define name="head">
+	</ui:define>
+
+	<ui:define name="body">
+		<h:form id="form">
+			<p:growl id="growl">
+				<p:autoUpdate />
+			</p:growl>
+			<h:outputText styleClass="titulo-tabela" value="Tarefas em andamento" />
+			<p:dataTable id="dataTable-andamento" var="tarefa"
+				widgetVar="tabelaEmAndamento"
+				emptyMessage="        Nenhuma tarefa encontrada."
+				filteredValue="#{tarefaMBean.tarefasFiltradas}"
+				value="#{tarefaMBean.tarefasEmAndamento}">
+				<p:column filterBy="#{tarefa.taskid}" sortBy="#{tarefa.taskid}"
+					filterMatchMode="contains" style="width:8%" headerText="Número">
+					<h:outputText value="#{tarefa.taskid}" />
+				</p:column>
+
+				<p:column filterBy="#{tarefa.titulo}" sortBy="#{tarefa.titulo}"
+					filterMatchMode="contains" headerText="Título">
+					<h:outputText value="#{tarefa.titulo}" />
+				</p:column>
+
+				<p:column filterBy="#{tarefa.responsavel}"
+					filterMatchMode="contains" sortBy="#{tarefa.responsavel}"
+					style="width: 12%" headerText="Responsável">
+					<h:outputText value="#{tarefa.responsavel}" />
+				</p:column>
+
+				<p:column style="width:10%" headerText="Situação">
+					<h:outputText value="#{tarefa.situacao.descricao}" />
+				</p:column>
+
+				<p:column styleClass="coluna-acoes" headerText="Ações">
+					<p:commandButton styleClass="acao" id="editar" value="Editar"
+						style="margin-right:20px;"
+						action="#{tarefaMBean.determinarTarefaSelecionada(tarefa)}"
+						onclick="PF('editarTarefaDialog').show()">
+					</p:commandButton>
+					<p:commandButton ajax="false" styleClass="acao" id="excluir" value="Excluir"
+						action="#{tarefaMBean.deletarTarefa(tarefa)}"
+						style="margin-right:20px;">
+					</p:commandButton>
+					<p:commandButton ajax="false" styleClass="acao" id="concluir" value="Concluir"
+						action="#{tarefaMBean.concluirTarefa(tarefa)}"
+						style="margin-right:20px;">
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+			<div style="height: 60px"></div>
+			<h:outputText styleClass="titulo-tabela" value="Tarefas concluídas" />
+			<p:dataTable id="dataTable-concluido" var="tarefa"
+				widgetVar="tabelaConcluidas"
+				emptyMessage="Nenhuma tarefa encontrada."
+				filteredValue="#{tarefaMBean.tarefasFiltradas}"
+				value="#{tarefaMBean.tarefasConcluidas}">
+				<p:column filterBy="#{tarefa.taskid}" sortBy="#{tarefa.taskid}"
+					filterMatchMode="contains" style="width:8%" headerText="Número">
+					<h:outputText value="#{tarefa.taskid}" />
+				</p:column>
+
+				<p:column filterBy="#{tarefa.titulo}" sortBy="#{tarefa.titulo}"
+					filterMatchMode="contains" headerText="Título">
+					<h:outputText value="#{tarefa.titulo}" />
+				</p:column>
+
+				<p:column filterBy="#{tarefa.responsavel}"
+					filterMatchMode="contains" sortBy="#{tarefa.responsavel}"
+					style="width: 15%" headerText="Responsável">
+					<h:outputText value="#{tarefa.responsavel}" />
+				</p:column>
+
+				<p:column style="width:10%" headerText="Situação">
+					<h:outputText value="#{tarefa.situacao.descricao}" />
+				</p:column>
+
+				<p:column styleClass="coluna-acoes-concluidas" headerText="Ações">
+					<p:commandButton ajax="false" styleClass="acao" id="excluir" value="Excluir"
+						action="#{tarefaMBean.deletarTarefa(tarefa)}"
+						style="margin-right:20px;">
+					</p:commandButton>
+				</p:column>
+
+			</p:dataTable>
+			<br />
+		</h:form>
+		<p:dialog closeOnEscape="true" id="editarTarefaDialog"
+			header="Editar Tarefa" widgetVar="editarTarefaDialog"
+			resizable="false">
+			<h:form id="editarTarefaForm">
+				<p:panelGrid id="panelGrid" columns="2">
+					<p:outputLabel for="titulo" value="Título:" />
+					<p:inputText
+						requiredMessage="Título: Observe que o campo é obrigatório"
+						required="true" id="titulo" value="#{tarefaMBean.titulo}" />
+
+					<p:outputLabel for="descricao" value="Descrição:" />
+					<p:inputTextarea id="descricao" value="#{tarefaMBean.descricao}" />
+
+					<p:outputLabel for="responsavel" value="Responsável:" />
+					<p:inputText
+						requiredMessage="Responsável: Observe que o campo é obrigatório"
+						required="true" id="responsavel"
+						value="#{tarefaMBean.responsavel}" />
+
+					<p:outputLabel for="prioridade" value="Prioridade:" />
+					<p:selectOneMenu id="prioridade" value="#{tarefaMBean.prioridade}">
+						<f:selectItems value="#{tarefaMBean.tiposPrioridades()}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel for="deadline" value="Deadline:" />
+					<p:calendar id="deadline" value="#{tarefaMBean.deadline}"
+						pattern="dd/MM/yyyy" />
+
+					<f:facet name="footer">
+						<p:commandButton value="Cancelar"
+							onclick="PF('editarTarefaDialog').hide();" />
+						<p:commandButton style="float:right" value="Salvar"
+							update="editarTarefaForm"
+							action="#{tarefaMBean.preencherTarefaParaEditar()}"
+							onsucess="PF('editarTarefaDialog').hide();" />
+					</f:facet>
+				</p:panelGrid>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

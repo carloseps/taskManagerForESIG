@@ -55,7 +55,7 @@ Caso as configurações padrão não tenham sido alteradas, você vai precisar a
 
 Você irá executar o projeto com o [Undertow Server](https://undertow.io/). Feito isso, a aplicação irá carregar todas as dependências e executar.  
 
-Para disfrutar das funções da aplicação basta abrir o url da sua porta local, geralmente **localhost:8080/main.xhtml** e a partir de lá navegar pelas páginas **cadastrar-tarefa.xhtml** e **listar-tarefas.xhtml**, ou ir direto para cada uma delas, apenas substituindo o endpoint no url da main.
+Para desfrutar das funções da aplicação basta abrir o url da sua porta local, geralmente **localhost:8080/main.xhtml** e a partir de lá navegar pelas páginas **cadastrar-tarefa.xhtml** e **listar-tarefas.xhtml**, ou ir direto para cada uma delas, apenas substituindo o endpoint no url da main.
 
 **Sobre as páginas:** 
 > Cadastrar Tarefa
